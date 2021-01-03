@@ -74,6 +74,11 @@
     <build>
         <plugins>
             <!-- Création du JAR -->
+            <!-- Création du JAR  : Configuration du JAR des batchs
+      Étant donné que je vais fournir les JAR des dépendances à côté du JAR du module ticket-batch,
+      je vais ajouter le classpath au manifest de ce JAR.
+      Ainsi, toutes les classes seront trouvées automatiquement
+      par la JVM lors de l'exécution du JAR.-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -89,6 +94,8 @@
             </plugin>
 
             <!-- Assemblage -->
+            <!-- Cabler la ganération de l'archive : création des archives de déploiement
+      RUN "mvn package" crée les rachive dans le fichier target -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

@@ -28,9 +28,17 @@
     <!-- Propriétés -->
     <!-- =============================================================== -->
     <properties>
+        <!-- Le nom "public" de l'application -->
         <application.name>TicketTac</application.name>
+        <!-- Le format à utiliser pour afficher la date du build -->
         <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>
+        <!-- Propriété servant à contourner le bug du non remplacement
+         de la propriété maven.build.timestamp lors du filtrage des ressources -->
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <!--DANS LE POM PARENT
+   <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+   <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    -->
     </properties>
 
 
@@ -38,7 +46,7 @@
     <!-- Dépendances -->
     <!-- =============================================================== -->
     <dependencies>
-        <!-- ===== Modules ===== -->
+        <!-- ===== Modules (versuons dans le pom parent) ===== -->
         <dependency>
             <groupId>org.exemple.demo</groupId>
             <artifactId>ticket-business</artifactId>
@@ -76,6 +84,14 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
+            <!-- <version>1.1</version>
+      <exclusions>
+         : La dépendance vers commons-lang3 est exclue  :
+            <exclusion>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+            </exclusion>
+        </exclusions>-->
         </dependency>
     </dependencies>
 
@@ -132,16 +148,23 @@
 
         <plugins>
             <plugin>
+                <!-- Require active profile de enforcer:enforce
+        ! a ajouter également dans le POM parent avec version-->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
                     <execution>
+                        <!-- je choisis un nom unique pour définir cette exécution -->
                         <id>enforce-profile-target</id>
+                        <!-- je branche l'exécution à la phase "validate" (1ere du default) -->
                         <phase>validate</phase>
+                        <!-- cette exécution lancera le goal "enforce" -->
                         <goals>
                             <goal>enforce</goal>
                         </goals>
                         <configuration>
+                            <!-- La configuration du plugin propre à cette exécution :
+              RUN mvn package -Ptarget-dev ou -Ptarget-test ou -Ptarget-prod -->
                             <rules>
                                 <requireActiveProfile>
                                     <profiles>target-dev,target-test,target-prod</profiles>
@@ -164,6 +187,7 @@
                         <resource>
                             <directory>src/main/webapp</directory>
                             <filtering>true</filtering>
+                            <!-- on va injecter des infos/variables par le filtrage dans ces JSP -->
                             <includes>
                                 <include>jsp/_include/header.jsp</include>
                                 <include>jsp/_include/footer.jsp</include>
